@@ -1,0 +1,112 @@
+[
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "dateOfBirth": "1985-06-15",
+        "email": "johndoe@example.com",
+        "phoneNumber": "+1234567890",
+        "address": "123 Elm Street",
+        "city": "Toronto",
+        "state": "ON",
+        "zipCode": "M5A 1A1"
+    },
+    {
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "dateOfBirth": "1992-11-23",
+        "email": "",
+        "phoneNumber": "+1987654321",
+        "address": "456 Oak Avenue",
+        "city": "Vancouver",
+        "state": "BC",
+        "zipCode": "V6B 1C1"
+    },
+    {
+        "firstName": "",
+        "lastName": "Johnson",
+        "dateOfBirth": "1978-02-14",
+        "email": "markjohnson@example.com",
+        "phoneNumber": "+1122334455",
+        "address": "789 Pine Road",
+        "city": "Montreal",
+        "state": "QC",
+        "zipCode": "H2X 3Y6"
+    },
+    {
+        "firstName": "Emily",
+        "lastName": "Davis",
+        "dateOfBirth": "1989-07-30",
+        "email": "emilydavis@example.com",
+        "phoneNumber": "+1456789012",
+        "address": "101 Maple Boulevard",
+        "city": "Calgary",
+        "state": "AB",
+        "zipCode": "T2P 1N9"
+    },
+    {
+        "firstName": "David",
+        "lastName": "Martinez",
+        "dateOfBirth": "1995-09-10",
+        "email": "davidmartinez@example.com",
+        "phoneNumber": "",
+        "address": "202 Birch Street",
+        "city": "Ottawa",
+        "state": "ON",
+        "zipCode": "K1A 0B1"
+    },
+    {
+        "firstName": "Sophia",
+        "lastName": "Taylor",
+        "dateOfBirth": "2000-03-25",
+        "email": "",
+        "phoneNumber": "+1567890123",
+        "address": "303 Cedar Lane",
+        "city": "Edmonton",
+        "state": "AB",
+        "zipCode": "T5A 1P2"
+    },
+    {
+        "firstName": "Liam",
+        "lastName": "Brown",
+        "dateOfBirth": "1982-12-11",
+        "email": "liam.brown@example.com",
+        "phoneNumber": "+1230987456",
+        "address": "404 Fir Street",
+        "city": "Quebec City",
+        "state": "QC",
+        "zipCode": "G1R 1A4"
+    },
+    {
+        "firstName": "Olivia",
+        "lastName": "Wilson",
+        "dateOfBirth": "1998-05-20",
+        "email": "oliviawilson@example.com",
+        "phoneNumber": "+1122338877",
+        "address": "505 Maple Drive",
+        "city": "Hamilton",
+        "state": "ON",
+        "zipCode": "L8P 1A9"
+    },
+    {
+        "firstName": "James",
+        "lastName": "Miller",
+        "dateOfBirth": "1990-08-12",
+        "email": "jamesmiller@example.com",
+        "phoneNumber": "+1415552468",
+        "address": "606 Spruce Court",
+        "city": "Saskatoon",
+        "state": "SK",
+        "zipCode": "S7K 3J3"
+    },
+    {
+        "firstName": "Chloe",
+        "lastName": "Lopez",
+        "dateOfBirth": "1987-04-05",
+        "email": "chloelopez@example.com",
+        "phoneNumber": "+1587234567",
+        "address": "707 Pinehill Road",
+        "city": "London",
+        "state": "ON",
+        "zipCode": "N6A 4K7"
+    }
+]
