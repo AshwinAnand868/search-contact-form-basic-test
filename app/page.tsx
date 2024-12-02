@@ -1,8 +1,10 @@
 "use client";
 
+import { canadianStates, OptionType } from "@/hardcoded-canadian-states";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
 import { z } from "zod";
 import contactData from "../data.json";
 import SearchResults from "./components/search-results";
@@ -37,7 +39,18 @@ interface Contact {
 const SearchPage = () => {
   const [data, setData] = useState<Contact[]>([]);
   const [filteredData, setFilteredData] = useState<Contact[]>([]);
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormData>({
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+
+  const [selectedOption, setSelectedOption] = useState<OptionType>(canadianStates[0]); // default selected option for state
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
@@ -45,7 +58,12 @@ const SearchPage = () => {
   const handleSearch = (formData: FormData) => {
     const filtered = data.filter((contact) =>
       Object.entries(formData).every(([key, value]) =>
-        value ? contact[key as keyof Contact]?.toString().toLowerCase().includes(value.toLowerCase()) : true
+        value
+          ? contact[key as keyof Contact]
+              ?.toString()
+              .toLowerCase()
+              .includes(value.toLowerCase())
+          : true
       )
     );
     setFilteredData(filtered);
@@ -58,15 +76,21 @@ const SearchPage = () => {
   };
 
   // Handle contact selection and populate the form inputs
-  const handleContactSelect = (contact: Contact) => {
-    setValue("firstName", contact.firstName);
-    setValue("lastName", contact.lastName);
-    setValue("email", contact.email);
-    setValue("phoneNumber", contact.phoneNumber);
-    setValue("city", contact.city);
-    setValue("state", contact.state);
-    setValue("zipCode", contact.zipCode);
-    setValue("address", contact.address);
+  const handleContactSelect = (checked: boolean, contact: Contact) => {
+    if (checked) {
+      setSelectedContact(contact);
+      setValue("firstName", contact.firstName);
+      setValue("lastName", contact.lastName);
+      setValue("email", contact.email);
+      setValue("phoneNumber", contact.phoneNumber);
+      setValue("city", contact.city);
+      setValue("state", contact.state);
+      setValue("zipCode", contact.zipCode);
+      setValue("address", contact.address);
+    } else {
+      setSelectedContact(null);
+      reset();
+    }
   };
 
   useEffect(() => {
@@ -79,111 +103,190 @@ const SearchPage = () => {
   }, [data]);
 
   return (
-    <div className="mx-auto p-4 max-w-5xl h-[100vh]">
-      <h1 className="text-2xl font-semibold text-center mb-6">Contact Search</h1>
+    <div className="mx-auto p-4 max-w-7xl h-[100vh]">
+      <h1 className="text-2xl font-semibold mb-6">Choose a contact</h1>
 
       {/* Search Form */}
-      <form onSubmit={handleSubmit(handleSearch)} className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-              First Name
-            </label>
-            <input
-              id="firstName"
-              type="text"
-              {...register("firstName")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      <form onSubmit={handleSubmit(handleSearch)} className="p-4 mb-6">
+        <h1 className="text-lg font-semibold mb-2">Search for a contact</h1>
+
+        <div className="block gap-y-4 lg:flex justify-between items-center lg:gap-x-60">
+          <div className="space-y-4">
+            <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  {...register("firstName")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  <span className="text-red-500 mr-[2px]">*</span>Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  {...register("lastName")}
+                  className={`mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400
+                    ${
+                      errors.lastName ? "border-red-500" : "border-neutral-300"
+                    }`}
+                />
+                {/* {errors.lastName && (
+                  <p className="text-red-500 text-sm">
+                    {errors.lastName?.message}
+                  </p>
+                )} */}
+              </div>
+              <div>
+                <label
+                  htmlFor="dateOfBirth"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Date of Birth
+                </label>
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  {...register("dateOfBirth")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
+            <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  {...register("email")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="phoneNumber"
+                  type="text"
+                  {...register("phoneNumber")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-              Last Name
-            </label>
-            <input
-              id="lastName"
-              type="text"
-              {...register("lastName")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName?.message}</p>}
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <input
-              id="phoneNumber"
-              type="text"
-              {...register("phoneNumber")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-              City
-            </label>
-            <input
-              id="city"
-              type="text"
-              {...register("city")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-              State
-            </label>
-            <input
-              id="state"
-              type="text"
-              {...register("state")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-              Zip Code
-            </label>
-            <input
-              id="zipCode"
-              type="text"
-              {...register("zipCode")}
-              className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+          <div className="space-y-4">
+            <div className="mt-4 lg:mt-0">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Street address
+              </label>
+              <input
+                id="address"
+                type="text"
+                {...register("address")}
+                className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+            <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  City
+                </label>
+                <input
+                  id="city"
+                  type="text"
+                  {...register("city")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  State
+                </label>
+                <Controller
+                  name="state"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      value={selectedOption}
+                      options={canadianStates}
+                      onChange={(option) => setSelectedOption(option!)}
+                      className="px-4 py-2 w-[150px] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                  )}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="zipCode"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Zip Code
+                </label>
+                <input
+                  id="zipCode"
+                  type="text"
+                  {...register("zipCode")}
+                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-8">
+          <button
+            type="submit"
+            className="px-4 py-2 bg-white text-blue-500 rounded-md border border-gray-400 hover:text-blue-800"
+          >
+            Search
+          </button>
           <button
             type="button"
             onClick={handleReset}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            className="px-4 py-2 bg-white text-gray-600 rounded-md hover:text-gray-900 border border-gray-400"
           >
             Reset
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-          >
-            Search
           </button>
         </div>
       </form>
 
-      <SearchResults data={filteredData} onContactSelect={handleContactSelect} />
-      
+      <SearchResults
+        data={filteredData}
+        selectedContact={selectedContact}
+        onContactSelect={handleContactSelect}
+      />
     </div>
   );
 };

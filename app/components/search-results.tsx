@@ -1,6 +1,8 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from "react";
+
 
 interface Contact {
   firstName: string;
@@ -16,10 +18,11 @@ interface Contact {
 
 interface SearchResultsProps {
   data: Contact[];
-  onContactSelect: (contact: Contact) => void;
+  selectedContact: Contact | null;
+  onContactSelect: (checked: boolean, contact: Contact) => void;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ data, onContactSelect }) => {
+const SearchResults: React.FC<SearchResultsProps> = ({ data, selectedContact, onContactSelect }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5);
 
@@ -35,14 +38,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({ data, onContactSelect }) 
   };
 
   return (
-    <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4">Search Results</h2>
-
+    <div className="mt-6 p-4">
+      
       {/* Table for Displaying Search Results */}
       <table className="min-w-full table-auto bg-white border border-gray-200 rounded-lg shadow-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Name</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600"></th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">First Name</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Last Name</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Date of Birth</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Address</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">City</th>
@@ -50,18 +54,28 @@ const SearchResults: React.FC<SearchResultsProps> = ({ data, onContactSelect }) 
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Zip Code</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Email</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Phone Number</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Action</th>
           </tr>
         </thead>
         <tbody>
           {currentContacts.map((contact, index) => (
             <tr
               key={index}
-              className="border-b hover:bg-gray-50 cursor-pointer"
-              onClick={() => onContactSelect(contact)}
+              className="border-b hover:bg-gray-50"
+              // onClick={() => onContactSelect(contact)}
             >
+              <td className="px-4 py-2 text-sm">
+                <input
+                    type="checkbox"
+                    checked={selectedContact?.email === contact.email}
+                    onChange={(e) => onContactSelect((e.target as HTMLInputElement).checked, contact)}
+                    className="cursor-pointer"
+                  />
+              </td>
               <td className="px-4 py-2 text-sm text-gray-700">
-                {contact.firstName} {contact.lastName}
+                {contact.firstName}
+              </td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {contact.lastName}
               </td>
               <td className="px-4 py-2 text-sm text-gray-700">{contact.dateOfBirth}</td>
               <td className="px-4 py-2 text-sm text-gray-700">{contact.address}</td>
@@ -70,30 +84,29 @@ const SearchResults: React.FC<SearchResultsProps> = ({ data, onContactSelect }) 
               <td className="px-4 py-2 text-sm text-gray-700">{contact.zipCode}</td>
               <td className="px-4 py-2 text-sm text-gray-700">{contact.email}</td>
               <td className="px-4 py-2 text-sm text-gray-700">{contact.phoneNumber}</td>
-              <td className="px-4 py-2 text-sm text-blue-600">Select</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-end mt-4">
         <button
-          className={`px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none disabled:bg-indigo-300`}
+          className={` text-blue-400 rounded-md shadow-sm hover:text-blue-700 focus:outline-none disabled:text-gray-400`}
           disabled={currentPage === 1 || data.length === 0}
           onClick={() => paginate(currentPage - 1)}
         >
-          Previous
+          <ChevronLeft className="w-8 h-8"/>
         </button>
-        <span className="mx-4 self-center text-sm text-gray-700">
-          Page {currentPage} of {totalPages}
+        <span className="self-center py-3 px-6 bg-blue-400 text-white">
+          {currentPage}
         </span>
         <button
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none disabled:bg-indigo-300"
+          className=" text-blue-400 rounded-md shadow-sm hover:text-blue-700 focus:outline-none disabled:text-gray-400"
           disabled={currentPage === totalPages || data.length === 0}
           onClick={() => paginate(currentPage + 1)}
         >
-          Next
+          <ChevronRight className="w-8 h-8"/>
         </button>
       </div>
     </div>
