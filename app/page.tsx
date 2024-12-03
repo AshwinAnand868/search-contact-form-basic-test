@@ -49,6 +49,7 @@ const SearchPage = () => {
   const handleReset = () => {
     reset();
     setValue("state", null);
+    setSelectedContact(null);
     setFilteredData(data); // Reset to all data when the form is cleared
   };
 
@@ -179,7 +180,7 @@ const SearchPage = () => {
                       onChange={(option) => {
                         field.onChange(option?.value); // Update the form's state
                       }}
-                      className="px-4 py-2 w-[150px] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      className="md:pt-1 w-[150px] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                   )}
                 />

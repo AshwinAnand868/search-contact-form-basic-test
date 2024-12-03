@@ -43,7 +43,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   return (
     <div className="mt-6 p-4">
       {/* Responsive Results */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         {/* Table for Larger Screens */}
         <table className="min-w-full table-auto bg-white border border-gray-200 rounded-lg shadow-sm">
           <thead className="bg-gray-100">
@@ -90,7 +90,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       </div>
 
       {/* Card View for Smaller Screens */}
-      <div className="block md:hidden">
+      <div className="block lg:hidden">
         {currentContacts.map((contact, index) => (
           <div
             key={index}
@@ -114,7 +114,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-center md:justify-end mt-4 w-full">
         <button
           className={`text-blue-400 rounded-md shadow-sm hover:text-blue-700 focus:outline-none disabled:text-gray-400`}
           disabled={currentPage === 1 || data.length === 0}
@@ -122,7 +122,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
-        <span className="self-center py-3 px-6 bg-blue-400 text-white">
+        <span className="self-center py-1 px-4  md:py-3 md:px-6 bg-blue-400 text-white">
           {currentPage}
         </span>
         <button
