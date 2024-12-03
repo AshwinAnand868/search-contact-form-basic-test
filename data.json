@@ -2,13 +2,24 @@
     {
         "firstName": "John",
         "lastName": "Doe",
-        "dateOfBirth": "1985-06-15",
+        "dateOfBirth": "2002-11-15",
         "email": "johndoe@example.com",
         "phoneNumber": "+1234567890",
         "address": "123 Elm Street",
         "city": "Toronto",
         "state": "ON",
         "zipCode": "M5A 1A1"
+    },
+    {
+        "firstName": "Rohn",
+        "lastName": "Doe",
+        "dateOfBirth": "2002-11-16",
+        "email": "rohndoe@example.com",
+        "phoneNumber": "+1234897890",
+        "address": "157 Elm Street",
+        "city": "Calgary",
+        "state": "AB",
+        "zipCode": "T2P 1N9"
     },
     {
         "firstName": "Jane",

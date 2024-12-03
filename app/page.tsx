@@ -1,47 +1,23 @@
 "use client";
 
-import { canadianStates, OptionType } from "@/hardcoded-canadian-states";
+import { canadianStates } from "@/hardcoded-canadian-states";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { z } from "zod";
 import contactData from "../data.json";
+import { Input } from "./components/inputs/input";
 import SearchResults from "./components/search-results";
-
-// Define the schema for the form using Zod (including required lastName field)
-const formSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().min(1, "Last Name is required"), // Last Name is required
-  dateOfBirth: z.string().optional(),
-  email: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zipCode: z.string().optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
-
-interface Contact {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  email: string;
-  phoneNumber: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-}
+import { FormData, formSchema } from "./lib/form-schema";
+import { Contact } from "./lib/types";
 
 const SearchPage = () => {
   const [data, setData] = useState<Contact[]>([]);
   const [filteredData, setFilteredData] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-
-  const [selectedOption, setSelectedOption] = useState<OptionType>(canadianStates[0]); // default selected option for state
 
   const {
     register,
@@ -72,6 +48,7 @@ const SearchPage = () => {
   // Handle resetting the search filters
   const handleReset = () => {
     reset();
+    setValue("state", null);
     setFilteredData(data); // Reset to all data when the form is cleared
   };
 
@@ -82,6 +59,7 @@ const SearchPage = () => {
       setValue("firstName", contact.firstName);
       setValue("lastName", contact.lastName);
       setValue("email", contact.email);
+      setValue("dateOfBirth", contact.dateOfBirth);
       setValue("phoneNumber", contact.phoneNumber);
       setValue("city", contact.city);
       setValue("state", contact.state);
@@ -94,7 +72,6 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
-    // For demonstration purposes, let's populate data with some static contacts.
     setData(contactData);
   }, []);
 
@@ -113,42 +90,14 @@ const SearchPage = () => {
         <div className="block gap-y-4 lg:flex justify-between items-center lg:gap-x-60">
           <div className="space-y-4">
             <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  First Name
-                </label>
-                <input
-                  id="firstName"
-                  type="text"
-                  {...register("firstName")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <span className="text-red-500 mr-[2px]">*</span>Last Name
-                </label>
-                <input
-                  id="lastName"
-                  type="text"
-                  {...register("lastName")}
-                  className={`mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400
-                    ${
-                      errors.lastName ? "border-red-500" : "border-neutral-300"
-                    }`}
-                />
-                {/* {errors.lastName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.lastName?.message}
-                  </p>
-                )} */}
-              </div>
+              <Input label="First Name" id="firstName" register={register} />
+              <Input
+                label="Last Name"
+                id="lastName"
+                register={register}
+                required
+                error={errors.lastName?.message}
+              />
               <div>
                 <label
                   htmlFor="dateOfBirth"
@@ -156,76 +105,58 @@ const SearchPage = () => {
                 >
                   Date of Birth
                 </label>
-                <input
-                  id="dateOfBirth"
-                  type="date"
-                  {...register("dateOfBirth")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Controller
+                    name="dateOfBirth"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        value={
+                          field.value ? dayjs(field.value, "YYYY-MM-DD") : null
+                        }
+                        onChange={(date) => {
+                          const formattedValue = date
+                            ? dayjs(date).format("YYYY-MM-DD")
+                            : "";
+                          field.onChange(formattedValue); // Update the form value
+                        }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
               </div>
             </div>
             <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="phoneNumber"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Phone Number
-                </label>
-                <input
-                  id="phoneNumber"
-                  type="text"
-                  {...register("phoneNumber")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
+              <Input
+                id="email"
+                label="Email"
+                type="email"
+                register={register}
+              />
+              <Input
+                label="Phone Number"
+                id="phoneNumber"
+                register={register}
+                error={errors.phoneNumber?.message}
+              />
             </div>
           </div>
           <div className="space-y-4">
             <div className="mt-4 lg:mt-0">
-              <label
-                htmlFor="address"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Street address
-              </label>
-              <input
+              <Input 
+                label="Street Address"
                 id="address"
-                type="text"
-                {...register("address")}
-                className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                register={register}
               />
             </div>
             <div className="space-y-4 md:flex md:gap-x-2 md:items-center md:space-y-0">
-              <div>
-                <label
-                  htmlFor="city"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  City
-                </label>
-                <input
-                  id="city"
-                  type="text"
-                  {...register("city")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-
+              <Input label="City" id="city" register={register} />
               <div>
                 <label
                   htmlFor="state"
@@ -239,28 +170,26 @@ const SearchPage = () => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      value={selectedOption}
+                      value={
+                        canadianStates.find(
+                          (option) => option.value === field.value
+                        ) || null
+                      }
                       options={canadianStates}
-                      onChange={(option) => setSelectedOption(option!)}
+                      onChange={(option) => {
+                        field.onChange(option?.value); // Update the form's state
+                      }}
                       className="px-4 py-2 w-[150px] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
                   )}
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="zipCode"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Zip Code
-                </label>
-                <input
-                  id="zipCode"
-                  type="text"
-                  {...register("zipCode")}
-                  className="mt-1 px-4 py-2 w-full border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
+              <Input
+                label="Zip Code"
+                id="zipCode"
+                register={register}
+                error={errors.zipCode?.message}
+              />
             </div>
           </div>
         </div>

@@ -4,7 +4,6 @@ export type OptionType = {
 };
 
 export const canadianStates: OptionType[] = [
-  { value: "", label: "" },
   { value: "AB", label: "AB" },
   { value: "BC", label: "BC" },
   { value: "MB", label: "MB" },
